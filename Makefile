@@ -1,12 +1,14 @@
-.PHONY: all rust go c cpp clean run-rust run-go run-c run-cpp run-all benchmark
+.PHONY: all rust go c cpp luajit python clean run-rust run-go run-c run-cpp run-luajit run-python run-all benchmark
 
 BUILD_DIR := build
 RUST_TARGET := $(BUILD_DIR)/SpeedLangX_rust
 GO_TARGET := $(BUILD_DIR)/SpeedLangX_go
 C_TARGET := $(BUILD_DIR)/SpeedLangX_c
 CPP_TARGET := $(BUILD_DIR)/SpeedLangX_cpp
+LUAJIT_TARGET := $(BUILD_DIR)/SpeedLangX_luajit
+PYTHON_TARGET := $(BUILD_DIR)/SpeedLangX_python
 
-all: rust go c cpp
+all: rust go c cpp luajit python
 
 rust:
 	@echo "Building Rust..."
@@ -33,6 +35,22 @@ cpp:
 	@cd cpp && g++ -O3 -march=native -std=c++17 -I/opt/homebrew/opt/openssl@3/include -I/opt/homebrew/include -o ../$(CPP_TARGET) main.cpp -L/opt/homebrew/opt/openssl@3/lib -L/opt/homebrew/lib -lcrypto
 	@echo "C++ binary: $(CPP_TARGET)"
 
+luajit:
+	@echo "Building LuaJIT..."
+	@mkdir -p $(BUILD_DIR)
+	@echo '#!/bin/bash' > $(LUAJIT_TARGET)
+	@echo 'cd $$(dirname $$0)/../luajit && luajit main.lua' >> $(LUAJIT_TARGET)
+	@chmod +x $(LUAJIT_TARGET)
+	@echo "LuaJIT binary: $(LUAJIT_TARGET)"
+
+python:
+	@echo "Building Python..."
+	@mkdir -p $(BUILD_DIR)
+	@echo '#!/bin/bash' > $(PYTHON_TARGET)
+	@echo 'cd $$(dirname $$0)/../python && python3 main.py' >> $(PYTHON_TARGET)
+	@chmod +x $(PYTHON_TARGET)
+	@echo "Python binary: $(PYTHON_TARGET)"
+
 clean:
 	@echo "Cleaning..."
 	@cd rust && cargo clean
@@ -57,7 +75,15 @@ run-cpp: cpp
 	@echo "Running C++..."
 	@$(CPP_TARGET)
 
-run-all: rust go c cpp
+run-luajit: luajit
+	@echo "Running LuaJIT..."
+	@$(LUAJIT_TARGET)
+
+run-python: python
+	@echo "Running Python..."
+	@$(PYTHON_TARGET)
+
+run-all: rust go c cpp luajit python
 	@echo "Running Rust..."
 	@$(RUST_TARGET)
 	@echo ""
@@ -69,7 +95,13 @@ run-all: rust go c cpp
 	@echo ""
 	@echo "Running C++..."
 	@$(CPP_TARGET)
+	@echo ""
+	@echo "Running LuaJIT..."
+	@$(LUAJIT_TARGET)
+	@echo ""
+	@echo "Running Python..."
+	@$(PYTHON_TARGET)
 
-benchmark: rust go c cpp
+benchmark: rust go c cpp luajit python
 	@echo "Running benchmarks..."
 	@python3 benchmark.py

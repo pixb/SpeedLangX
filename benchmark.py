@@ -77,7 +77,7 @@ def run_benchmark(binary):
     except json.JSONDecodeError:
         return None
 
-def save_result(hw_info, rust_result, go_result, c_result, cpp_result):
+def save_result(hw_info, rust_result, go_result, c_result, cpp_result, luajit_result, python_result):
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     
     entry = f"""## Benchmark Result - {timestamp}
@@ -94,11 +94,15 @@ def save_result(hw_info, rust_result, go_result, c_result, cpp_result):
 | {go_result['language']} | {go_result['time']:.2f} | {go_result['ops_per_sec']:,} | {go_result['hash']} |
 | {c_result['language']} | {c_result['time']:.2f} | {c_result['ops_per_sec']:,} | {c_result['hash']} |
 | {cpp_result['language']} | {cpp_result['time']:.2f} | {cpp_result['ops_per_sec']:,} | {cpp_result['hash']} |
+| {luajit_result['language']} | {luajit_result['time']:.2f} | {luajit_result['ops_per_sec']:,} | {luajit_result['hash']} |
+| {python_result['language']} | {python_result['time']:.2f} | {python_result['ops_per_sec']:,} | {python_result['hash']} |
 
 ### Performance Summary
 - Rust is {(go_result['time'] / rust_result['time'] - 1) * 100:.1f}% faster than Go
 - C is {(go_result['time'] / c_result['time'] - 1) * 100:.1f}% faster than Go
 - C++ is {(go_result['time'] / cpp_result['time'] - 1) * 100:.1f}% faster than Go
+- LuaJIT is {(go_result['time'] / luajit_result['time'] - 1) * 100:.1f}% faster than Go
+- Python is {(go_result['time'] / python_result['time'] - 1) * 100:.1f}% faster than Go
 - Final hash: {rust_result['hash']}
 
 ---
@@ -120,8 +124,10 @@ def main():
     go_result = run_benchmark('./build/SpeedLangX_go')
     c_result = run_benchmark('./build/SpeedLangX_c')
     cpp_result = run_benchmark('./build/SpeedLangX_cpp')
+    luajit_result = run_benchmark('./build/SpeedLangX_luajit')
+    python_result = run_benchmark('./build/SpeedLangX_python')
     
-    if not rust_result or not go_result or not c_result or not cpp_result:
+    if not rust_result or not go_result or not c_result or not cpp_result or not luajit_result or not python_result:
         print("Error: Failed to run benchmarks")
         sys.exit(1)
     
@@ -161,6 +167,18 @@ def main():
             'Time (s)': f"{cpp_result['time']:.2f}",
             'Ops/sec': f"{cpp_result['ops_per_sec']:,}",
             'Hash': cpp_result['hash'][:16] + '...'
+        },
+        {
+            'Language': luajit_result['language'],
+            'Time (s)': f"{luajit_result['time']:.2f}",
+            'Ops/sec': f"{luajit_result['ops_per_sec']:,}",
+            'Hash': luajit_result['hash'][:16] + '...'
+        },
+        {
+            'Language': python_result['language'],
+            'Time (s)': f"{python_result['time']:.2f}",
+            'Ops/sec': f"{python_result['ops_per_sec']:,}",
+            'Hash': python_result['hash'][:16] + '...'
         }
     ]
     
@@ -172,14 +190,18 @@ def main():
     go_time = go_result['time']
     c_time = c_result['time']
     cpp_time = cpp_result['time']
+    luajit_time = luajit_result['time']
+    python_time = python_result['time']
     
     print(f"Performance Summary:")
     print(f"  Rust is {(go_time / rust_time - 1) * 100:.1f}% faster than Go")
     print(f"  C is {(go_time / c_time - 1) * 100:.1f}% faster than Go")
     print(f"  C++ is {(go_time / cpp_time - 1) * 100:.1f}% faster than Go")
+    print(f"  LuaJIT is {(go_time / luajit_time - 1) * 100:.1f}% faster than Go")
+    print(f"  Python is {(go_time / python_time - 1) * 100:.1f}% faster than Go")
     print(f"  Final hash: {rust_result['hash']}")
     
-    save_result(hw_info, rust_result, go_result, c_result, cpp_result)
+    save_result(hw_info, rust_result, go_result, c_result, cpp_result, luajit_result, python_result)
 
 if __name__ == '__main__':
     main()
