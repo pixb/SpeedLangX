@@ -10,6 +10,8 @@
 ![Go](https://img.shields.io/badge/Go-1.23-blue?style=for-the-badge&logo=go)
 ![C](https://img.shields.io/badge/C-17-blue?style=for-the-badge&logo=c)
 ![C++](https://img.shields.io/badge/C%2B%2B-17-blue?style=for-the-badge&logo=c%2B%2B)
+![LuaJIT](https://img.shields.io/badge/LuaJIT-2.1-blue?style=for-the-badge&logo=lua)
+![Python](https://img.shields.io/badge/Python-3.12-blue?style=for-the-badge&logo=python)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 ![Platform](https://img.shields.io/badge/Platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey?style=for-the-badge)
 
@@ -46,6 +48,10 @@ SpeedLangX/
 │   └── main.c
 ├── cpp/               # C++ implementation
 │   └── main.cpp
+├── luajit/            # LuaJIT implementation
+│   └── main.lua
+├── python/            # Python implementation
+│   └── main.py
 ├── benchmark.py        # Benchmark script
 ├── Makefile           # Build script
 ├── BenchmarkResult.md  # Test result log
@@ -61,7 +67,8 @@ SpeedLangX/
 - **Rust**: 1.87 or higher
 - **Go**: 1.23 or higher
 - **C/C++**: GCC or Clang compiler
-- **Python**: 3.x (for running benchmark scripts)
+- **LuaJIT**: 2.1 or higher
+- **Python**: 3.12 or higher
 - **Make**: For build management
 
 ### Install Dependencies
@@ -71,13 +78,13 @@ SpeedLangX/
 pip3 install tabulate
 
 # macOS
-brew install openssl jansson nlohmann-json
+brew install openssl jansson nlohmann-json luajit
 
 # Linux (Ubuntu/Debian)
-sudo apt-get install libssl-dev libjansson-dev nlohmann-json3-dev
+sudo apt-get install libssl-dev libjansson-dev nlohmann-json3-dev luajit
 
 # Linux (Fedora/CentOS)
-sudo dnf install openssl-devel jansson-devel nlohmann-json-devel
+sudo dnf install openssl-devel jansson-devel nlohmann-json-devel luajit-devel
 ```
 
 ### Build Project
@@ -91,6 +98,8 @@ make rust    # Build Rust only
 make go      # Build Go only
 make c        # Build C only
 make cpp      # Build C++ only
+make luajit   # Build LuaJIT only
+make python   # Build Python only
 ```
 
 ---
@@ -104,7 +113,7 @@ make benchmark
 ```
 
 This will:
-1. Compile Rust, Go, C, and C++ programs
+1. Compile Rust, Go, C, C++, LuaJIT, and Python programs
 2. Collect hardware information (OS, CPU, Memory)
 3. Run performance tests
 4. Display beautiful result tables
@@ -117,6 +126,8 @@ make run-rust    # Run Rust test only
 make run-go      # Run Go test only
 make run-c       # Run C test only
 make run-cpp     # Run C++ test only
+make run-luajit  # Run LuaJIT test only
+make run-python  # Run Python test only
 make run-all     # Run all tests (without table display)
 ```
 
@@ -142,16 +153,20 @@ make clean
 
 | Language   | Time (s) | Ops/sec    | Hash                |
 |------------|------------|------------|---------------------|
-| Rust       | 16.4       | 12,194,527 | ef963d1220b1b5f9... |
-| Go         | 25.18      | 7,944,228  | ef963d1220b1b5f9... |
-| C          | 69.58      | 2,874,579  | ef963d1220b1b5f9... |
-| C++        | 72.23      | 2,768,962  | ef963d1220b1b5f9... |
+| Rust       | 16.91      | 11,824,273 | ef963d1220b1b5f9... |
+| Go         | 25.91      | 7,717,997  | ef963d1220b1b5f9... |
+| C          | 71.26      | 2,806,622  | ef963d1220b1b5f9... |
+| C++        | 73.77      | 2,711,167  | ef963d1220b1b5f9... |
+| LuaJIT     | 118.53     | 1,687,391  | ef963d1220b1b5f9... |
+| Python     | 153.94     | 1,299,194  | ef963d1220b1b5f9... |
 
 ### Performance Summary
 
-- Rust is **53.5%** faster than Go
-- C is **63.8%** slower than Go
-- C++ is **65.1%** slower than Go
+- Rust is **53.2%** faster than Go
+- C is **63.6%** slower than Go
+- C++ is **64.9%** slower than Go
+- LuaJIT is **78.1%** slower than Go
+- Python is **83.2%** slower than Go
 - Final Hash: `ef963d1220b1b5f930ef309a489eae0197dcec7537953ba96bd270808bda4144`
 
 ---
@@ -188,6 +203,16 @@ make clean
 - Architecture optimization: `-march=native`
 - C++ standard: `-std=c++17`
 - Linked libraries: OpenSSL (SHA256), nlohmann/json (JSON)
+
+#### LuaJIT
+- Uses FFI (Foreign Function Interface) to call OpenSSL
+- Just-in-time compilation
+- Linked libraries: OpenSSL (SHA256)
+
+#### Python
+- Uses built-in `hashlib` library
+- Interpreted language (no compilation)
+- Uses `json` module for output
 
 ---
 
@@ -231,7 +256,7 @@ Test performance is mainly affected by the following hardware factors:
 
 ### Modifying Test Parameters
 
-Edit the loop count in each language's source file:
+Edit loop count in each language's source file:
 
 ```rust
 // Rust
@@ -251,6 +276,16 @@ for count < 200_000_000 {
 ```cpp
 // C++
 #define ITERATIONS 200000000
+```
+
+```lua
+-- LuaJIT
+local ITERATIONS = 200000000
+```
+
+```python
+# Python
+ITERATIONS = 200000000
 ```
 
 ---
