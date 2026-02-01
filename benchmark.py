@@ -77,7 +77,7 @@ def run_benchmark(binary):
     except json.JSONDecodeError:
         return None
 
-def save_result(hw_info, rust_result, go_result, speedup):
+def save_result(hw_info, rust_result, go_result, c_result, cpp_result):
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     
     entry = f"""## Benchmark Result - {timestamp}
@@ -92,9 +92,13 @@ def save_result(hw_info, rust_result, go_result, speedup):
 |----------|-----------|----------|-------|
 | {rust_result['language']} | {rust_result['time']:.2f} | {rust_result['ops_per_sec']:,} | {rust_result['hash']} |
 | {go_result['language']} | {go_result['time']:.2f} | {go_result['ops_per_sec']:,} | {go_result['hash']} |
+| {c_result['language']} | {c_result['time']:.2f} | {c_result['ops_per_sec']:,} | {c_result['hash']} |
+| {cpp_result['language']} | {cpp_result['time']:.2f} | {cpp_result['ops_per_sec']:,} | {cpp_result['hash']} |
 
 ### Performance Summary
-- Rust is {speedup:.1f}% faster than Go
+- Rust is {(go_result['time'] / rust_result['time'] - 1) * 100:.1f}% faster than Go
+- C is {(go_result['time'] / c_result['time'] - 1) * 100:.1f}% faster than Go
+- C++ is {(go_result['time'] / cpp_result['time'] - 1) * 100:.1f}% faster than Go
 - Final hash: {rust_result['hash']}
 
 ---
@@ -114,8 +118,10 @@ def main():
     
     rust_result = run_benchmark('./build/SpeedLangX_rust')
     go_result = run_benchmark('./build/SpeedLangX_go')
+    c_result = run_benchmark('./build/SpeedLangX_c')
+    cpp_result = run_benchmark('./build/SpeedLangX_cpp')
     
-    if not rust_result or not go_result:
+    if not rust_result or not go_result or not c_result or not cpp_result:
         print("Error: Failed to run benchmarks")
         sys.exit(1)
     
@@ -143,6 +149,18 @@ def main():
             'Time (s)': f"{go_result['time']:.2f}",
             'Ops/sec': f"{go_result['ops_per_sec']:,}",
             'Hash': go_result['hash'][:16] + '...'
+        },
+        {
+            'Language': c_result['language'],
+            'Time (s)': f"{c_result['time']:.2f}",
+            'Ops/sec': f"{c_result['ops_per_sec']:,}",
+            'Hash': c_result['hash'][:16] + '...'
+        },
+        {
+            'Language': cpp_result['language'],
+            'Time (s)': f"{cpp_result['time']:.2f}",
+            'Ops/sec': f"{cpp_result['ops_per_sec']:,}",
+            'Hash': cpp_result['hash'][:16] + '...'
         }
     ]
     
@@ -152,13 +170,16 @@ def main():
     
     rust_time = rust_result['time']
     go_time = go_result['time']
-    speedup = (go_time / rust_time - 1) * 100
+    c_time = c_result['time']
+    cpp_time = cpp_result['time']
     
     print(f"Performance Summary:")
-    print(f"  Rust is {speedup:.1f}% faster than Go")
+    print(f"  Rust is {(go_time / rust_time - 1) * 100:.1f}% faster than Go")
+    print(f"  C is {(go_time / c_time - 1) * 100:.1f}% faster than Go")
+    print(f"  C++ is {(go_time / cpp_time - 1) * 100:.1f}% faster than Go")
     print(f"  Final hash: {rust_result['hash']}")
     
-    save_result(hw_info, rust_result, go_result, speedup)
+    save_result(hw_info, rust_result, go_result, c_result, cpp_result)
 
 if __name__ == '__main__':
     main()

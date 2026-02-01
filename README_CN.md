@@ -8,6 +8,8 @@
 
 ![Rust](https://img.shields.io/badge/Rust-1.87-orange?style=for-the-badge&logo=rust)
 ![Go](https://img.shields.io/badge/Go-1.23-blue?style=for-the-badge&logo=go)
+![C](https://img.shields.io/badge/C-17-blue?style=for-the-badge&logo=c)
+![C++](https://img.shields.io/badge/C%2B%2B-17-blue?style=for-the-badge&logo=c%2B%2B)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 ![Platform](https://img.shields.io/badge/Platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey?style=for-the-badge)
 
@@ -27,6 +29,7 @@
 - 📝 **结果持久化**：每次测试结果自动保存到 Markdown 文件
 - 🚀 **一键运行**：使用 Makefile 简化构建和测试流程
 - 🎯 **跨平台支持**：支持 macOS、Linux 和 Windows
+- 🌐 **多语言支持**：支持 Rust、Go、C、C++
 
 ---
 
@@ -39,6 +42,10 @@ SpeedLangX/
 │   └── src/main.rs
 ├── go/                # Go 实现
 │   └── main.go
+├── c/                 # C 实现
+│   └── main.c
+├── cpp/               # C++ 实现
+│   └── main.cpp
 ├── benchmark.py        # 基准测试脚本
 ├── Makefile           # 构建脚本
 ├── BenchmarkResult.md  # 测试结果记录
@@ -53,6 +60,7 @@ SpeedLangX/
 
 - **Rust**: 1.87 或更高版本
 - **Go**: 1.23 或更高版本
+- **C/C++**: GCC 或 Clang 编译器
 - **Python**: 3.x（用于运行基准测试脚本）
 - **Make**: 用于构建管理
 
@@ -61,6 +69,15 @@ SpeedLangX/
 ```bash
 # 安装 Python 依赖
 pip3 install tabulate
+
+# macOS
+brew install openssl jansson nlohmann-json
+
+# Linux (Ubuntu/Debian)
+sudo apt-get install libssl-dev libjansson-dev nlohmann-json3-dev
+
+# Linux (Fedora/CentOS)
+sudo dnf install openssl-devel jansson-devel nlohmann-json-devel
 ```
 
 ### 构建项目
@@ -72,6 +89,8 @@ make all
 # 或者单独构建
 make rust    # 仅构建 Rust
 make go      # 仅构建 Go
+make c        # 仅构建 C
+make cpp      # 仅构建 C++
 ```
 
 ---
@@ -85,7 +104,7 @@ make benchmark
 ```
 
 这将：
-1. 编译 Rust 和 Go 程序
+1. 编译 Rust、Go、C、C++ 程序
 2. 收集硬件信息（OS、CPU、内存）
 3. 运行性能测试
 4. 显示美观的结果表格
@@ -96,6 +115,8 @@ make benchmark
 ```bash
 make run-rust    # 仅运行 Rust 测试
 make run-go      # 仅运行 Go 测试
+make run-c       # 仅运行 C 测试
+make run-cpp     # 仅运行 C++ 测试
 make run-all     # 运行所有测试（无表格展示）
 ```
 
@@ -121,12 +142,16 @@ make clean
 
 | Language   | Time (s) | Ops/sec    | Hash                |
 |------------|------------|------------|---------------------|
-| Rust       | 16.55      | 12,082,351 | ef963d1220b1b5f9... |
-| Go         | 25.55      | 7,828,702  | ef963d1220b1b5f9... |
+| Rust       | 16.4       | 12,194,527 | ef963d1220b1b5f9... |
+| Go         | 25.18      | 7,944,228  | ef963d1220b1b5f9... |
+| C          | 69.58      | 2,874,579  | ef963d1220b1b5f9... |
+| C++        | 72.23      | 2,768,962  | ef963d1220b1b5f9... |
 
 ### 性能总结
 
-- Rust 比 Go 快 **54.3%**
+- Rust 比 Go 快 **53.5%**
+- C 比 Go 慢 **63.8%**
+- C++ 比 Go 慢 **65.1%**
 - 最终 Hash: `ef963d1220b1b5f930ef309a489eae0197dcec7537953ba96bd270808bda4144`
 
 ---
@@ -152,6 +177,17 @@ make clean
 - 链接器标志: `-ldflags="-s -w"`
 - 编译器标志: `-gcflags="-l=4"`
 - 路径清理: `-trimpath`
+
+#### C
+- 优化级别: `-O3`
+- 架构优化: `-march=native`
+- 链接库: OpenSSL (SHA256), Jansson (JSON)
+
+#### C++
+- 优化级别: `-O3`
+- 架构优化: `-march=native`
+- C++ 标准: `-std=c++17`
+- 链接库: OpenSSL (SHA256), nlohmann/json (JSON)
 
 ---
 
@@ -195,7 +231,7 @@ make clean
 
 ### 修改测试参数
 
-编辑 `rust/src/main.rs` 和 `go/main.go` 中的循环次数：
+编辑各语言源文件中的循环次数：
 
 ```rust
 // Rust
@@ -205,6 +241,16 @@ while count < 200_000_000u64 {
 ```go
 // Go
 for count < 200_000_000 {
+```
+
+```c
+// C
+#define ITERATIONS 200000000
+```
+
+```cpp
+// C++
+#define ITERATIONS 200000000
 ```
 
 ---
@@ -233,6 +279,9 @@ for count < 200_000_000 {
 - [Rust](https://www.rust-lang.org/) - 系统编程语言
 - [Go](https://golang.org/) - 简洁高效的编程语言
 - [ring](https://github.com/briansmith/ring) - Rust 加密库
+- [OpenSSL](https://www.openssl.org/) - C/C++ 加密库
+- [Jansson](https://digip.org/jansson/) - C JSON 库
+- [nlohmann/json](https://github.com/nlohmann/json) - C++ JSON 库
 - [tabulate](https://github.com/astanin/python-tabulate) - Python 表格格式化库
 
 ---

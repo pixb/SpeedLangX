@@ -8,6 +8,8 @@
 
 ![Rust](https://img.shields.io/badge/Rust-1.87-orange?style=for-the-badge&logo=rust)
 ![Go](https://img.shields.io/badge/Go-1.23-blue?style=for-the-badge&logo=go)
+![C](https://img.shields.io/badge/C-17-blue?style=for-the-badge&logo=c)
+![C++](https://img.shields.io/badge/C%2B%2B-17-blue?style=for-the-badge&logo=c%2B%2B)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 ![Platform](https://img.shields.io/badge/Platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey?style=for-the-badge)
 
@@ -27,6 +29,7 @@
 - 📝 **Result persistence**: Automatically saves each test result to a Markdown file
 - 🚀 **One-click execution**: Uses Makefile to simplify build and test workflows
 - 🎯 **Cross-platform support**: Supports macOS, Linux, and Windows
+- 🌐 **Multi-language support**: Supports Rust, Go, C, and C++
 
 ---
 
@@ -39,6 +42,10 @@ SpeedLangX/
 │   └── src/main.rs
 ├── go/                # Go implementation
 │   └── main.go
+├── c/                 # C implementation
+│   └── main.c
+├── cpp/               # C++ implementation
+│   └── main.cpp
 ├── benchmark.py        # Benchmark script
 ├── Makefile           # Build script
 ├── BenchmarkResult.md  # Test result log
@@ -53,6 +60,7 @@ SpeedLangX/
 
 - **Rust**: 1.87 or higher
 - **Go**: 1.23 or higher
+- **C/C++**: GCC or Clang compiler
 - **Python**: 3.x (for running benchmark scripts)
 - **Make**: For build management
 
@@ -61,6 +69,15 @@ SpeedLangX/
 ```bash
 # Install Python dependencies
 pip3 install tabulate
+
+# macOS
+brew install openssl jansson nlohmann-json
+
+# Linux (Ubuntu/Debian)
+sudo apt-get install libssl-dev libjansson-dev nlohmann-json3-dev
+
+# Linux (Fedora/CentOS)
+sudo dnf install openssl-devel jansson-devel nlohmann-json-devel
 ```
 
 ### Build Project
@@ -72,6 +89,8 @@ make all
 # Or build individually
 make rust    # Build Rust only
 make go      # Build Go only
+make c        # Build C only
+make cpp      # Build C++ only
 ```
 
 ---
@@ -85,7 +104,7 @@ make benchmark
 ```
 
 This will:
-1. Compile Rust and Go programs
+1. Compile Rust, Go, C, and C++ programs
 2. Collect hardware information (OS, CPU, Memory)
 3. Run performance tests
 4. Display beautiful result tables
@@ -96,6 +115,8 @@ This will:
 ```bash
 make run-rust    # Run Rust test only
 make run-go      # Run Go test only
+make run-c       # Run C test only
+make run-cpp     # Run C++ test only
 make run-all     # Run all tests (without table display)
 ```
 
@@ -121,12 +142,16 @@ make clean
 
 | Language   | Time (s) | Ops/sec    | Hash                |
 |------------|------------|------------|---------------------|
-| Rust       | 16.55      | 12,082,351 | ef963d1220b1b5f9... |
-| Go         | 25.55      | 7,828,702  | ef963d1220b1b5f9... |
+| Rust       | 16.4       | 12,194,527 | ef963d1220b1b5f9... |
+| Go         | 25.18      | 7,944,228  | ef963d1220b1b5f9... |
+| C          | 69.58      | 2,874,579  | ef963d1220b1b5f9... |
+| C++        | 72.23      | 2,768,962  | ef963d1220b1b5f9... |
 
 ### Performance Summary
 
-- Rust is **54.3%** faster than Go
+- Rust is **53.5%** faster than Go
+- C is **63.8%** slower than Go
+- C++ is **65.1%** slower than Go
 - Final Hash: `ef963d1220b1b5f930ef309a489eae0197dcec7537953ba96bd270808bda4144`
 
 ---
@@ -152,6 +177,17 @@ make clean
 - Linker flags: `-ldflags="-s -w"`
 - Compiler flags: `-gcflags="-l=4"`
 - Trim paths: `-trimpath`
+
+#### C
+- Optimization level: `-O3`
+- Architecture optimization: `-march=native`
+- Linked libraries: OpenSSL (SHA256), Jansson (JSON)
+
+#### C++
+- Optimization level: `-O3`
+- Architecture optimization: `-march=native`
+- C++ standard: `-std=c++17`
+- Linked libraries: OpenSSL (SHA256), nlohmann/json (JSON)
 
 ---
 
@@ -195,7 +231,7 @@ Test performance is mainly affected by the following hardware factors:
 
 ### Modifying Test Parameters
 
-Edit the loop count in `rust/src/main.rs` and `go/main.go`:
+Edit the loop count in each language's source file:
 
 ```rust
 // Rust
@@ -205,6 +241,16 @@ while count < 200_000_000u64 {
 ```go
 // Go
 for count < 200_000_000 {
+```
+
+```c
+// C
+#define ITERATIONS 200000000
+```
+
+```cpp
+// C++
+#define ITERATIONS 200000000
 ```
 
 ---
@@ -233,6 +279,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Rust](https://www.rust-lang.org/) - Systems programming language
 - [Go](https://golang.org/) - Simple and efficient programming language
 - [ring](https://github.com/briansmith/ring) - Rust cryptography library
+- [OpenSSL](https://www.openssl.org/) - C/C++ cryptography library
+- [Jansson](https://digip.org/jansson/) - C JSON library
+- [nlohmann/json](https://github.com/nlohmann/json) - C++ JSON library
 - [tabulate](https://github.com/astanin/python-tabulate) - Python table formatting library
 
 ---

@@ -14,6 +14,13 @@ go/*.so
 go/*.test
 go/*.out
 
+# C
+c/main.o
+c/*.o
+
+# C++
+cpp/*.o
+
 # Rust
 rust/target/
 **/*.rs.bk
