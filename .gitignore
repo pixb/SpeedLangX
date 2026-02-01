@@ -1,0 +1,43 @@
+# Build outputs
+build/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Go
+go/demo
+go/*.exe
+go/*.dll
+go/*.so
+go/*.test
+go/*.out
+
+# Rust
+rust/target/
+**/*.rs.bk
+rust/Cargo.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/

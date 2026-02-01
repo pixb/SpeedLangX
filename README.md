@@ -1,0 +1,246 @@
+# SpeedLangX
+
+<div align="center">
+  <img src="res/1769931931.png" alt="SpeedLangX Banner" width="100%">
+</div>
+
+<div align="center">
+
+![Rust](https://img.shields.io/badge/Rust-1.87-orange?style=for-the-badge&logo=rust)
+![Go](https://img.shields.io/badge/Go-1.23-blue?style=for-the-badge&logo=go)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+![Platform](https://img.shields.io/badge/Platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey?style=for-the-badge)
+
+</div>
+
+---
+
+## 📖 About
+
+**SpeedLangX** is a high-performance programming language benchmark project focused on comparing the performance of different programming languages under identical algorithms. This project uses SHA256 double hashing as a benchmark test case to intuitively demonstrate performance differences between languages.
+
+### ✨ Features
+
+- 🔥 **High-performance comparison**: Uses optimized compilation settings to showcase true language performance
+- 📊 **Beautiful table display**: Automatically generates formatted performance comparison tables
+- 💾 **Hardware info collection**: Automatically detects and records test environment hardware configuration
+- 📝 **Result persistence**: Automatically saves each test result to a Markdown file
+- 🚀 **One-click execution**: Uses Makefile to simplify build and test workflows
+- 🎯 **Cross-platform support**: Supports macOS, Linux, and Windows
+
+---
+
+## 🏗️ Project Structure
+
+```
+SpeedLangX/
+├── rust/              # Rust implementation
+│   ├── Cargo.toml
+│   └── src/main.rs
+├── go/                # Go implementation
+│   └── main.go
+├── benchmark.py        # Benchmark script
+├── Makefile           # Build script
+├── BenchmarkResult.md  # Test result log
+└── README.md          # Project documentation
+```
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- **Rust**: 1.87 or higher
+- **Go**: 1.23 or higher
+- **Python**: 3.x (for running benchmark scripts)
+- **Make**: For build management
+
+### Install Dependencies
+
+```bash
+# Install Python dependencies
+pip3 install tabulate
+```
+
+### Build Project
+
+```bash
+# Build all projects
+make all
+
+# Or build individually
+make rust    # Build Rust only
+make go      # Build Go only
+```
+
+---
+
+## 📊 Running Benchmarks
+
+### Run Full Benchmark
+
+```bash
+make benchmark
+```
+
+This will:
+1. Compile Rust and Go programs
+2. Collect hardware information (OS, CPU, Memory)
+3. Run performance tests
+4. Display beautiful result tables
+5. Save results to [BenchmarkResult.md](./BenchmarkResult.md)
+
+### Run Individual Tests
+
+```bash
+make run-rust    # Run Rust test only
+make run-go      # Run Go test only
+make run-all     # Run all tests (without table display)
+```
+
+### Clean Build Artifacts
+
+```bash
+make clean
+```
+
+---
+
+## 📈 Test Result Example
+
+### Hardware Information
+
+| Component   | Specification   |
+|-------------|-----------------|
+| OS          | macOS 15.7.3    |
+| CPU         | Apple M4        |
+| Memory      | 16 GB           |
+
+### Performance Comparison
+
+| Language   | Time (s) | Ops/sec    | Hash                |
+|------------|------------|------------|---------------------|
+| Rust       | 16.55      | 12,082,351 | ef963d1220b1b5f9... |
+| Go         | 25.55      | 7,828,702  | ef963d1220b1b5f9... |
+
+### Performance Summary
+
+- Rust is **54.3%** faster than Go
+- Final Hash: `ef963d1220b1b5f930ef309a489eae0197dcec7537953ba96bd270808bda4144`
+
+---
+
+## 🔧 Technical Details
+
+### Test Algorithm
+
+- **Algorithm**: SHA256 double hashing
+- **Iterations**: 200,000,000 times
+- **Data Size**: 32 bytes
+
+### Compilation Optimizations
+
+#### Rust
+- Optimization level: `opt-level = 3`
+- Link-time optimization: `lto = true`
+- Codegen units: `codegen-units = 1`
+- Panic strategy: `panic = "abort"`
+- Strip symbols: `strip = true`
+
+#### Go
+- Linker flags: `-ldflags="-s -w"`
+- Compiler flags: `-gcflags="-l=4"`
+- Trim paths: `-trimpath`
+
+---
+
+## 💻 Hardware Impact
+
+Test performance is mainly affected by the following hardware factors:
+
+### CPU (Most Important)
+- ✅ CPU architecture (x86/ARM)
+- ✅ Instruction set support (AVX2/AVX-512/NEON)
+- ✅ Single-core frequency (this test is single-threaded)
+- ✅ Cache size (L1/L2/L3)
+
+### Memory (Less Impact)
+- ⚪ Memory bandwidth (small data size, limited impact)
+- ⚪ Memory latency (data can fit entirely in cache)
+
+### Other Factors
+- 🔥 Thermal performance (overheating causes throttling)
+- 🔋 Power management (power-saving mode limits performance)
+
+---
+
+## 📝 Development Guide
+
+### Adding a New Programming Language
+
+1. Create a new language directory in the project root
+2. Implement the same SHA256 double hashing algorithm
+3. Output results in JSON format:
+   ```json
+   {
+     "language": "LanguageName",
+     "time": 12.34,
+     "ops_per_sec": 12345678,
+     "hash": "abc123..."
+   }
+   ```
+4. Update Makefile to add build targets
+5. Update `benchmark.py` to add test logic
+
+### Modifying Test Parameters
+
+Edit the loop count in `rust/src/main.rs` and `go/main.go`:
+
+```rust
+// Rust
+while count < 200_000_000u64 {
+```
+
+```go
+// Go
+for count < 200_000_000 {
+```
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! If you want to:
+
+- 🌍 Add new programming languages
+- 🐛 Fix bugs
+- 📚 Improve documentation
+- ⚡ Optimize performance
+
+Please submit a Pull Request!
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+
+---
+
+## 🙏 Acknowledgments
+
+- [Rust](https://www.rust-lang.org/) - Systems programming language
+- [Go](https://golang.org/) - Simple and efficient programming language
+- [ring](https://github.com/briansmith/ring) - Rust cryptography library
+- [tabulate](https://github.com/astanin/python-tabulate) - Python table formatting library
+
+---
+
+<div align="center">
+
+**If this project helps you, please give it a ⭐️**
+
+Made with ❤️ by [Your Name](https://github.com/yourusername)
+
+</div>
