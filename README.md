@@ -241,6 +241,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **If this project helps you, please give it a ⭐️**
 
-Made with ❤️ by [Your Name](https://github.com/yourusername)
+Made with ❤️ by [pixb](https://github.com/pixb)
 
 </div>

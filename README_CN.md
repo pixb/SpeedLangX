@@ -241,6 +241,6 @@ for count < 200_000_000 {
 
 **如果这个项目对你有帮助，请给一个 ⭐️**
 
-Made with ❤️ by [Your Name](https://github.com/yourusername)
+Made with ❤️ by [pixb](https://github.com/pixb)
 
 </div>
