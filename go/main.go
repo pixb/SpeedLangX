@@ -8,38 +8,44 @@ import (
 	"time"
 )
 
-func doubleSha256(data []byte) []byte {
-	first := sha256.Sum256(data)
-	second := sha256.Sum256(first[:])
-	return second[:]
-}
 func main() {
 	start := time.Now()
 	lastReport := start
-	loops := 0
 	count := 0
-	blockhash := []byte("1")
-	for count < 200_000_000 {
-		blockhash = doubleSha256(blockhash)
-		loops++
+
+	// 初始输入是单字节 '1'，与 Rust 代码保持一致
+	currentInput := []byte("1")
+	blockhash := [32]byte{}
+
+	const reportInterval = 10_000_000
+	const totalOps = 200_000_000
+
+	for count < totalOps {
+		first := sha256.Sum256(currentInput)
+		blockhash = sha256.Sum256(first[:])
+		currentInput = blockhash[:]
+
 		count++
-		now := time.Now()
-		if now.Sub(lastReport).Seconds() >= 1.0 {
-			elapsed := now.Sub(start).Seconds()
-			fmt.Printf("Current blockhash: %s | %d ops/sec\n",
-				hex.EncodeToString(blockhash),
-				int64(float64(loops)/elapsed))
-			lastReport = now
+
+		if count%reportInterval == 0 {
+			now := time.Now()
+			elapsedSinceLast := now.Sub(lastReport).Seconds()
+			if elapsedSinceLast >= 1.0 {
+				totalElapsed := now.Sub(start).Seconds()
+				fmt.Printf("Current blockhash: %s | %d ops/sec\n",
+					hex.EncodeToString(blockhash[:]),
+					int64(float64(count)/totalElapsed))
+				lastReport = now
+			}
 		}
 	}
-	total := time.Since(start).Seconds()
-	opsPerSec := int64(float64(loops) / total)
 
+	total := time.Since(start).Seconds()
 	result := map[string]interface{}{
 		"language":    "Go",
 		"time":        total,
-		"ops_per_sec": opsPerSec,
-		"hash":        hex.EncodeToString(blockhash),
+		"ops_per_sec": int64(float64(count) / total),
+		"hash":        hex.EncodeToString(blockhash[:]),
 	}
 	jsonData, _ := json.Marshal(result)
 	fmt.Println(string(jsonData))

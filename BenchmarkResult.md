@@ -140,3 +140,30 @@
 
 ---
 
+## Benchmark Result - 2026-02-05 03:17:34
+
+### Hardware
+- **OS**: macOS 15.7.3
+- **CPU**: Apple M4
+- **Memory**: 16 GB
+
+### Results
+| Language | Time (s) | Ops/sec | Hash |
+|----------|-----------|----------|-------|
+| Rust | 17.86 | 11,195,139 | ef963d1220b1b5f930ef309a489eae0197dcec7537953ba96bd270808bda4144 |
+| Go | 17.60 | 11,361,420 | ef963d1220b1b5f930ef309a489eae0197dcec7537953ba96bd270808bda4144 |
+| C | 73.22 | 2,731,425 | ef963d1220b1b5f930ef309a489eae0197dcec7537953ba96bd270808bda4144 |
+| C++ | 74.79 | 2,674,235 | ef963d1220b1b5f930ef309a489eae0197dcec7537953ba96bd270808bda4144 |
+| LuaJIT | 119.42 | 1,674,789 | ef963d1220b1b5f930ef309a489eae0197dcec7537953ba96bd270808bda4144 |
+| Python | 154.03 | 1,298,420 | ef963d1220b1b5f930ef309a489eae0197dcec7537953ba96bd270808bda4144 |
+
+### Performance Summary
+- Rust is -1.5% faster than Go
+- C is -76.0% faster than Go
+- C++ is -76.5% faster than Go
+- LuaJIT is -85.3% faster than Go
+- Python is -88.6% faster than Go
+- Final hash: ef963d1220b1b5f930ef309a489eae0197dcec7537953ba96bd270808bda4144
+
+---
+
